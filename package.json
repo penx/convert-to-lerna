@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "CLI to convert an existing repo to a lerna monorepo",
   "bin": {
-    "convert-to-lerna": "./cli.js"
+    "ctl-pkg": "./cli/pkg.js",
+    "ctl-up": "./cli/update-package.js",
+    "ctl-init": "./cli.sh"
   },
   "author": "Alasdair McLeay",
   "license": "ISC",
