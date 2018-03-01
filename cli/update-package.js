@@ -30,6 +30,23 @@ package.workspaces = [
 
 package.private = true
 
+package.jest.collectCoverageFrom.push(
+  "components/*/src/**/*.{js,jsx}",
+  "!components/*/node_modules",
+  "!components/*/src/**/stories.js",
+  "!components/*/src/**/example.js",
+  "packages/*/src/**/*.{js,jsx}",
+  "!packages/*/node_modules",
+  "!packages/storybook",
+  "!packages/*/src/**/stories.js",
+  "!packages/*/src/**/example.js"
+)
+
+package.jest.testMatch.push(
+  "<rootDir>/components/*/src/**/?(*.)(spec|test).js?(x)",
+  "<rootDir>/packages/*/src/**/?(*.)(spec|test).js?(x)"
+)
+
 fs.writeFileSync(packagePath, JSON.stringify(package, undefined, 2));
 
 fs.writeFileSync(path.resolve(process.cwd(), "lerna.json"), JSON.stringify({
