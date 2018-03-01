@@ -1,21 +1,13 @@
-# for each folder in /src/components/MyComponent
+# Make all React components modules
 for directory in src/components/*; do
-  # 1. move to /components/my-component/src
   componentName="$(basename $directory)"
   dirName="$(echo $componentName | sed 's/\(.\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
   mkdir -p components/$dirName
   git mv src/components/$componentName components/$dirName/src
-  # 2. add a package.json using a template
-  # ...and set:
-  #  - name to @scope/my-component
   PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
   ctl-pkg -p $PACKAGE_VERSION -n govuk-react $dirName > components/$dirName/package.json
   git add components/$dirName/package.json
 done
-
-echo "components/**/es\n" >> .gitignore
-echo "components/**/lib\n" >> .gitignore
-git add .gitignore
 
 rm src/components/.DS_Store
 rmdir src/components
@@ -24,23 +16,32 @@ mkdir -p packages/storybook
 git mv src/stories packages/storybook/stories
 git mv .storybook packages/storybook/.storybook
 
-mkdir -p packages/govuk-react/src/
-git mv src/*.js packages/govuk-react/src/
+# Make all other src folders modules
+for directory in src/*; do
+  moduleName="$(basename $directory)"
+  dirName="$(echo $moduleName | sed 's/\(.\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
+  mkdir -p packages/$dirName
+  git mv src/$moduleName packages/$dirName/src
+  PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
+  ctl-pkg -p $PACKAGE_VERSION -n govuk-react $dirName > packages/$dirName/package.json
+  git add packages/$dirName/package.json
+done
 
-mkdir -p packages/constants/src/
-git mv src/constants packages/constants/src/
-
-mkdir -p packages/icons/src/
-git mv src/icons packages/icons/src/
-
-mkdir -p packages/hoc/src/
-git mv src/hoc packages/hoc/src/
+rm src/.DS_Store
+rmdir src
 
 ctl-up package.json
 
 yarn add lerna@2 -D -W
 
+# Update git
 git add yarn.lock
 git add lerna.json
+
+echo "components/**/es\n" >> .gitignore
+echo "components/**/lib\n" >> .gitignore
+echo "packages/**/es\n" >> .gitignore
+echo "packages/**/lib\n" >> .gitignore
+git add .gitignore
 
 echo done
