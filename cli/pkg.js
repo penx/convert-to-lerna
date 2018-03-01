@@ -3,7 +3,7 @@
 var commander = require('commander');
 var path = require('path');
 var chalk = require('chalk');
-var { version } = require('./package.json');
+var { version } = require('../package.json');
 
 var pkg = require(path.resolve(process.cwd(), 'package.json'));
 
