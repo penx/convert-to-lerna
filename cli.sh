@@ -1,10 +1,11 @@
+PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
+
 # Make all React components modules
 for directory in src/components/*; do
   componentName="$(basename $directory)"
   dirName="$(echo $componentName | sed 's/\(.\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
   mkdir -p components/$dirName
   git mv src/components/$componentName components/$dirName/src
-  PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
   ctl-pkg -p $PACKAGE_VERSION -n govuk-react $dirName > components/$dirName/package.json
   git add components/$dirName/package.json
 done
@@ -16,13 +17,17 @@ mkdir -p packages/storybook
 git mv src/stories packages/storybook/stories
 git mv .storybook packages/storybook/.storybook
 
+mkdir -p packages/govuk-react/src/
+git mv src/*.js packages/govuk-react/src/
+ctl-pkg -p $PACKAGE_VERSION -n govuk-react govuk-react > packages/govuk-react/package.json
+git add packages/govuk-react/package.json
+
 # Make all other src folders modules
 for directory in src/*; do
   moduleName="$(basename $directory)"
   dirName="$(echo $moduleName | sed 's/\(.\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')"
   mkdir -p packages/$dirName
   git mv src/$moduleName packages/$dirName/src
-  PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
   ctl-pkg -p $PACKAGE_VERSION -n govuk-react $dirName > packages/$dirName/package.json
   git add packages/$dirName/package.json
 done
