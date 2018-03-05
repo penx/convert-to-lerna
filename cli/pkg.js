@@ -21,9 +21,15 @@ console.log(JSON.stringify({
   "name": namespace ? `@${namespace}/${component}` : component,
   "version": pkg.version,
   "dependencies": {
+    "govuk-colours": pkg.dependencies["govuk-colours"],
+    "@govuk-react/constants": pkg.version
   },
   "peerDependencies": pkg.peerDependencies,
   "devDependencies": {
+    "react-dom": pkg.devDependencies["react-dom"],
+    "enzyme": pkg.devDependencies["enzyme"],
+    "@storybook/react": pkg.devDependencies["@storybook/react"],
+    "@storybook/addon-actions": pkg.devDependencies["@storybook/addon-actions"]
   },
   "scripts": {
     "build": "npm run build:lib && npm run build:es",
